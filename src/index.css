@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  color: var(--tg-theme-text-color, #000000);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+#root {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  color: var(--tg-theme-text-color, #000000);
+  border: none;
+  outline: none;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--tg-theme-hint-color, #999999);
+}
+
+@layer utilities {
+  .card {
+    @apply rounded-2xl p-4 shadow-sm;
+    background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  }
+  .btn-primary {
+    @apply rounded-xl px-4 py-3 font-semibold text-sm transition-opacity active:opacity-70;
+    background-color: var(--tg-theme-button-color, #2481cc);
+    color: var(--tg-theme-button-text-color, #ffffff);
+  }
+  .btn-ghost {
+    @apply rounded-xl px-4 py-3 font-semibold text-sm transition-opacity active:opacity-70;
+    color: var(--tg-theme-button-color, #2481cc);
+  }
+  .input-field {
+    @apply rounded-xl px-4 py-3 text-sm w-full;
+    background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+    color: var(--tg-theme-text-color, #000000);
+  }
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-wider mb-2;
+    color: var(--tg-theme-hint-color, #999999);
+  }
+  .text-hint {
+    color: var(--tg-theme-hint-color, #999999);
+  }
+  .text-link {
+    color: var(--tg-theme-link-color, #2481cc);
+  }
+  .bg-secondary {
+    background-color: var(--tg-theme-secondary-bg-color, #f1f1f1);
+  }
+  .bg-primary {
+    background-color: var(--tg-theme-bg-color, #ffffff);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 0; }
+
+/* Animations */
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.slide-up { animation: slideUp 0.25s ease; }
