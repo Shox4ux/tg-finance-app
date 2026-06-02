@@ -57,7 +57,7 @@ export function Income() {
 
   return (
     <div className="flex flex-col gap-4 pb-6 slide-up w-full">
-      <div className="px-5 pt-5 flex items-start justify-between">
+      <div className="px-5 sm:px-8 pt-5 sm:pt-7 flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold">{t('income_title')}</h2>
           <p className="text-sm text-hint mt-0.5">
@@ -70,7 +70,7 @@ export function Income() {
       </div>
 
       {incomeSources.length === 0 ? (
-        <div className="mx-5 card flex flex-col items-center py-10 gap-3">
+        <div className="mx-5 sm:mx-8 card flex flex-col items-center py-10 gap-3">
           <span className="text-4xl">💰</span>
           <p className="text-sm text-hint text-center" style={{ whiteSpace: 'pre-line' }}>{t('income_empty')}</p>
           <button onClick={openAdd} className="btn-primary flex items-center gap-1">
@@ -78,7 +78,7 @@ export function Income() {
           </button>
         </div>
       ) : (
-        <div className="px-5 flex flex-col gap-3">
+        <div className="px-5 sm:px-8 flex flex-col gap-3">
           {incomeSources.map((src) => {
             const monthly = src.amount * MONTHLY_MULTIPLIER[src.frequency];
             return (

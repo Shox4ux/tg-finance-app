@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface SheetProps {
@@ -9,41 +9,53 @@ interface SheetProps {
 }
 
 export function Sheet({ open, onClose, title, children }: SheetProps) {
-  const ref = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
 
   if (!open) return null;
 
+  const isDesktop = window.innerWidth >= 640;
+
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col justify-end" style={{ maxWidth: 480, margin: '0 auto' }}>
+    <div
+      className="fixed inset-0 z-[100] flex"
+      style={{
+        alignItems: isDesktop ? 'center' : 'flex-end',
+        justifyContent: 'center',
+        padding: isDesktop ? '24px' : '0',
+      }}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+
+      {/* Dialog */}
       <div
-        className="absolute inset-0 bg-black/40"
-        onClick={onClose}
-      />
-      <div
-        ref={ref}
-        className="relative rounded-t-3xl slide-up overflow-auto"
+        className="relative slide-up overflow-auto w-full"
         style={{
           backgroundColor: 'var(--tg-theme-bg-color, #fff)',
-          maxHeight: '90dvh',
-          paddingBottom: 'calc(env(safe-area-inset-bottom) + 16px)',
+          maxHeight: isDesktop ? '85dvh' : '92dvh',
+          maxWidth: isDesktop ? 560 : '100%',
+          borderRadius: isDesktop ? 24 : '24px 24px 0 0',
+          paddingBottom: isDesktop ? 0 : 'calc(env(safe-area-inset-bottom) + 8px)',
+          boxShadow: isDesktop ? '0 24px 60px rgba(0,0,0,0.3)' : 'none',
         }}
       >
-        <div className="flex items-center justify-between px-5 pt-5 pb-3">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 pt-6 pb-3">
           <h2 className="font-bold text-lg">{title}</h2>
-          <button onClick={onClose} className="p-1 rounded-full active:opacity-60" style={{ color: 'var(--tg-theme-hint-color)' }}>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-full active:opacity-60 transition-opacity"
+            style={{ color: 'var(--tg-theme-hint-color)' }}
+          >
             <X size={20} />
           </button>
         </div>
-        <div className="px-5 pb-4">{children}</div>
+
+        {/* Content */}
+        <div className="px-6 pb-6">{children}</div>
       </div>
     </div>
   );

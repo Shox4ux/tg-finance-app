@@ -50,7 +50,7 @@ export function Expenses() {
 
   return (
     <div className="flex flex-col gap-4 pb-6 slide-up w-full">
-      <div className="px-5 pt-5 flex items-start justify-between">
+      <div className="px-5 sm:px-8 pt-5 sm:pt-7 flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold">{t('exp_title')}</h2>
           {filtered.length > 0 && (
@@ -84,7 +84,7 @@ export function Expenses() {
       )}
 
       {filtered.length === 0 ? (
-        <div className="mx-5 card flex flex-col items-center py-10 gap-3">
+        <div className="mx-5 sm:mx-8 card flex flex-col items-center py-10 gap-3">
           <span className="text-4xl">💳</span>
           <p className="text-sm text-hint text-center" style={{ whiteSpace: 'pre-line' }}>{t('exp_empty')}</p>
           <button onClick={openAdd} className="btn-primary flex items-center gap-1">
@@ -92,7 +92,7 @@ export function Expenses() {
           </button>
         </div>
       ) : (
-        <div className="px-5 flex flex-col gap-4">
+        <div className="px-5 sm:px-8 flex flex-col gap-4">
           {dates.map((date) => (
             <div key={date}>
               <div className="flex items-center justify-between mb-2">
@@ -127,37 +127,39 @@ export function Expenses() {
       )}
 
       <Sheet open={sheetOpen} onClose={() => setSheetOpen(false)} title={t('exp_add')}>
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-4">
           <div>
             <label className="section-title block">{t('exp_name')}</label>
             <input className="input-field" placeholder={t('exp_name_ph')} value={form.title} onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))} />
           </div>
-          <div>
-            <label className="section-title block">{t('exp_amount')}</label>
-            <input className="input-field" type="number" placeholder="0" value={form.amount || ''} onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))} />
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="section-title block">{t('exp_amount')}</label>
+              <input className="input-field" type="number" placeholder="0" value={form.amount || ''} onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))} />
+            </div>
+            <div>
+              <label className="section-title block">{t('exp_date')}</label>
+              <input className="input-field" type="date" value={form.date} onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))} />
+            </div>
           </div>
           <div>
             <label className="section-title block">{t('exp_category')}</label>
             <div className="grid grid-cols-5 gap-2">
               {EXPENSE_CATEGORIES.map((cat) => (
                 <button key={cat.id} onClick={() => setForm((f) => ({ ...f, category: cat.id }))}
-                  className="flex flex-col items-center gap-1 py-2 rounded-xl text-xs transition-all"
+                  className="flex flex-col items-center gap-1.5 py-2.5 rounded-xl text-xs transition-all"
                   style={{ backgroundColor: form.category === cat.id ? `${cat.color}30` : 'var(--tg-theme-secondary-bg-color)', border: form.category === cat.id ? `2px solid ${cat.color}` : '2px solid transparent' }}>
-                  <span className="text-lg">{cat.icon}</span>
+                  <span className="text-2xl">{cat.icon}</span>
                   <span className="text-[10px] font-medium">{cat.label}</span>
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <label className="section-title block">{t('exp_date')}</label>
-            <input className="input-field" type="date" value={form.date} onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))} />
-          </div>
-          <div>
             <label className="section-title block">{t('exp_note')}</label>
             <input className="input-field" placeholder={t('exp_note_ph')} value={form.note} onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))} />
           </div>
-          <button onClick={save} className="btn-primary w-full mt-2">{t('exp_add')}</button>
+          <button onClick={save} className="btn-primary w-full">{t('exp_add')}</button>
         </div>
       </Sheet>
     </div>
