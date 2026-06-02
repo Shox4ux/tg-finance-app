@@ -333,7 +333,7 @@ export function Plans() {
   const [tab, setTab] = useState<PlanTab>('savings');
 
   return (
-    <div className="flex flex-col gap-4 pb-6 slide-up">
+    <div className="flex flex-col gap-4 pb-6 slide-up w-full">
       <div className="px-5 pt-5">
         <h2 className="text-2xl font-bold">Plans</h2>
       </div>

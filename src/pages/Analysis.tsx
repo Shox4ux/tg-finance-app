@@ -74,7 +74,7 @@ export function Analysis() {
     : 0;
 
   return (
-    <div className="flex flex-col gap-5 pb-6 slide-up">
+    <div className="flex flex-col gap-5 pb-6 slide-up w-full">
       <div className="px-5 pt-5">
         <h2 className="text-2xl font-bold">{t('an_title')}</h2>
       </div>

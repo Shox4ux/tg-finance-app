@@ -50,7 +50,7 @@ export function Alerts() {
     id ? EXPENSE_CATEGORIES.find((c) => c.id === id) : null;
 
   return (
-    <div className="flex flex-col gap-4 pb-6 slide-up">
+    <div className="flex flex-col gap-4 pb-6 slide-up w-full">
       <div className="px-5 pt-5 flex items-start justify-between">
         <div>
           <h2 className="text-2xl font-bold">Spending Alerts</h2>
