@@ -4,7 +4,7 @@ import { useFinanceStore } from '../store/useFinanceStore';
 import { Sheet } from '../components/Sheet';
 import { fmt, uid, todayISO, fmtDate } from '../utils/format';
 import { EXPENSE_CATEGORIES, type Expense, type ExpenseCategory, type Currency } from '../types';
-import { useT } from '../i18n';
+import { useT, useCatLabel } from '../i18n';
 
 const defaultForm = (currency: Currency): Omit<Expense, 'id'> => ({
   title: '', amount: 0, currency, category: 'food', date: todayISO(), note: '',
@@ -12,6 +12,7 @@ const defaultForm = (currency: Currency): Omit<Expense, 'id'> => ({
 
 export function Expenses() {
   const t = useT();
+  const catLabel = useCatLabel();
   const expenses = useFinanceStore((s) => s.expenses);
   const addExpense = useFinanceStore((s) => s.addExpense);
   const deleteExpense = useFinanceStore((s) => s.deleteExpense);
@@ -78,7 +79,7 @@ export function Expenses() {
         <div className="px-5 flex gap-2 overflow-x-auto pb-1">
           <CategoryChip active={filterCategory === 'all'} label={t('al_all_cats')} icon="📋" onClick={() => setFilterCategory('all')} />
           {EXPENSE_CATEGORIES.map((cat) => (
-            <CategoryChip key={cat.id} active={filterCategory === cat.id} label={cat.label} icon={cat.icon} onClick={() => setFilterCategory(cat.id)} />
+            <CategoryChip key={cat.id} active={filterCategory === cat.id} label={catLabel(cat.id)} icon={cat.icon} onClick={() => setFilterCategory(cat.id)} />
           ))}
         </div>
       )}
@@ -109,7 +110,7 @@ export function Expenses() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{exp.title}</p>
-                        <p className="text-xs text-hint">{cat.label}{exp.note ? ` · ${exp.note}` : ''}</p>
+                        <p className="text-xs text-hint">{catLabel(cat.id)}{exp.note ? ` · ${exp.note}` : ''}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="font-semibold text-sm shrink-0" style={{ color: '#E74C3C' }}>-{fmt(exp.amount, exp.currency)}</span>
@@ -150,7 +151,7 @@ export function Expenses() {
                   className="flex flex-col items-center gap-1.5 py-2.5 rounded-xl text-xs transition-all"
                   style={{ backgroundColor: form.category === cat.id ? `${cat.color}30` : 'var(--tg-theme-secondary-bg-color)', border: form.category === cat.id ? `2px solid ${cat.color}` : '2px solid transparent' }}>
                   <span className="text-2xl">{cat.icon}</span>
-                  <span className="text-[10px] font-medium">{cat.label}</span>
+                  <span className="text-[10px] font-medium">{catLabel(cat.id)}</span>
                 </button>
               ))}
             </div>

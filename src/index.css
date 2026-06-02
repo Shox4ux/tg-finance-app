@@ -31,7 +31,7 @@ body {
   #root main {
     flex: 1;
     overflow-y: auto;
-    max-width: 800px;
+    min-width: 0;
   }
 }
 

@@ -74,6 +74,10 @@ const T = {
     al_exceeded: '⚠️ Limit exceeded by',
     al_preview: 'Alert when', al_preview_exceeds: 'spending exceeds', al_preview_per: 'per',
     al_limit_daily: 'Daily limit', al_limit_weekly: 'Weekly limit', al_limit_monthly: 'Monthly limit',
+    // Categories
+    cat_food: 'Food', cat_transport: 'Transport', cat_housing: 'Housing',
+    cat_health: 'Health', cat_entertainment: 'Fun', cat_shopping: 'Shopping',
+    cat_education: 'Education', cat_utilities: 'Utilities', cat_travel: 'Travel', cat_other: 'Other',
     // Common
     add: 'Add', save: 'Save Changes', cancel: 'Cancel',
     currency_lbl: 'Currency', language_lbl: 'Language', by: 'By',
@@ -142,6 +146,10 @@ const T = {
     al_exceeded: '⚠️ Превышено на',
     al_preview: 'Алерт когда', al_preview_exceeds: 'расходы превысят', al_preview_per: 'в',
     al_limit_daily: 'Дневной лимит', al_limit_weekly: 'Недельный лимит', al_limit_monthly: 'Месячный лимит',
+    // Categories
+    cat_food: 'Еда', cat_transport: 'Транспорт', cat_housing: 'Жильё',
+    cat_health: 'Здоровье', cat_entertainment: 'Развлечения', cat_shopping: 'Покупки',
+    cat_education: 'Образование', cat_utilities: 'Коммунальные', cat_travel: 'Путешествия', cat_other: 'Другое',
     add: 'Добавить', save: 'Сохранить', cancel: 'Отмена',
     currency_lbl: 'Валюта', language_lbl: 'Язык', by: 'До',
   },
@@ -209,10 +217,19 @@ const T = {
     al_exceeded: '⚠️ Limit oshdi',
     al_preview: 'Ogohlantirish', al_preview_exceeds: 'xarajat oshganda', al_preview_per: 'da',
     al_limit_daily: 'Kunlik limit', al_limit_weekly: 'Haftalik limit', al_limit_monthly: 'Oylik limit',
+    // Categories
+    cat_food: 'Ovqat', cat_transport: 'Transport', cat_housing: 'Uy-joy',
+    cat_health: 'Sog\'liq', cat_entertainment: 'Ko\'ngil ochar', cat_shopping: 'Xarid',
+    cat_education: 'Ta\'lim', cat_utilities: 'Kommunal', cat_travel: 'Sayohat', cat_other: 'Boshqa',
     add: 'Qo\'shish', save: 'Saqlash', cancel: 'Bekor qilish',
     currency_lbl: 'Valyuta', language_lbl: 'Til', by: 'Gacha',
   },
 } as const;
+
+export function useCatLabel() {
+  const t = useT();
+  return (id: string) => t(`cat_${id}` as TKey);
+}
 
 export type TKey = keyof typeof T['en'];
 
