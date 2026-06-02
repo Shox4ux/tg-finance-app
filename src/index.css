@@ -18,32 +18,20 @@ body {
 
 #root {
   min-height: 100dvh;
-  max-width: 480px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
-/* Desktop: show phone frame */
-@media (min-width: 600px) {
-  body {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 32px 16px;
-  }
+/* Desktop layout */
+@media (min-width: 640px) {
   #root {
-    min-height: calc(100vh - 64px);
-    max-height: calc(100vh - 64px);
-    border-radius: 32px;
-    overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.08);
+    flex-direction: row;
+    min-height: 100dvh;
   }
   #root main {
+    flex: 1;
     overflow-y: auto;
+    max-width: 800px;
   }
 }
 

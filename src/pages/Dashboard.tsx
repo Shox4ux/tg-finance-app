@@ -37,7 +37,7 @@ export function Dashboard() {
     EXPENSE_CATEGORIES.find((c) => c.id === id) ?? EXPENSE_CATEGORIES[EXPENSE_CATEGORIES.length - 1];
 
   return (
-    <div className="flex flex-col gap-4 pb-6 slide-up">
+    <div className="flex flex-col gap-4 pb-6 slide-up sm:max-w-3xl">
       {/* Header */}
       <div className="px-5 pt-5 flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -70,7 +70,7 @@ export function Dashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="px-5 grid grid-cols-2 gap-3">
+      <div className="px-5 grid grid-cols-2 sm:grid-cols-4 gap-3">
         <StatCard
           label={t('dash_monthly_income')}
           value={fmt(monthlyIncome, currency)}

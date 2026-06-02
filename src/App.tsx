@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useFinanceStore } from './store/useFinanceStore';
 import { BottomNav } from './components/BottomNav';
+import { SideNav } from './components/SideNav';
 import { Dashboard } from './pages/Dashboard';
 import { Income } from './pages/Income';
 import { Expenses } from './pages/Expenses';
@@ -90,12 +91,15 @@ export default function App() {
 
   const Page = PAGE_MAP[activeTab];
 
+  const isDesktop = window.innerWidth >= 640;
+
   return (
-    <div className="flex flex-col flex-1">
-      <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 72 }}>
+    <>
+      {isDesktop && <SideNav />}
+      <main className="flex-1 overflow-y-auto" style={{ paddingBottom: isDesktop ? 0 : 72 }}>
         <Page />
       </main>
-      <BottomNav />
-    </div>
+      {!isDesktop && <BottomNav />}
+    </>
   );
 }
