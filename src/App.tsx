@@ -16,6 +16,7 @@ declare global {
         expand: () => void;
         setHeaderColor: (color: string) => void;
         setBackgroundColor: (color: string) => void;
+        initDataUnsafe?: { user?: { id?: number; first_name?: string } };
         themeParams?: {
           bg_color?: string;
           text_color?: string;
@@ -57,6 +58,13 @@ const PAGE_MAP = {
 export default function App() {
   const activeTab = useFinanceStore((s) => s.activeTab);
   const checkAlerts = useFinanceStore((s) => s.checkAlerts);
+  const setTgUserId = useFinanceStore((s) => s.setTgUserId);
+  const loadFromServer = useFinanceStore((s) => s.loadFromServer);
+  const saveToServer = useFinanceStore((s) => s.saveToServer);
+  const tgUserId = useFinanceStore((s) => s.tgUserId);
+  const storeSnapshot = useFinanceStore((s) =>
+    `${s.currency}|${s.language}|${s.incomeSources.length}|${s.expenses.length}|${s.savingsPlans.length}|${s.growthPlans.length}|${s.alerts.length}`
+  );
 
   useEffect(() => {
     const tg = window.Telegram?.WebApp;
@@ -66,13 +74,24 @@ export default function App() {
       applyTelegramTheme();
     }
     checkAlerts();
+
+    const userId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id?.toString();
+    if (userId) {
+      setTgUserId(userId);
+      loadFromServer(userId);
+    }
   }, []);
+
+  useEffect(() => {
+    if (!tgUserId) return;
+    const timer = setTimeout(() => saveToServer(tgUserId), 1500);
+    return () => clearTimeout(timer);
+  }, [storeSnapshot, tgUserId]);
 
   const Page = PAGE_MAP[activeTab];
 
   return (
     <div className="flex flex-col flex-1">
-      {/* Page content with bottom padding for nav */}
       <main className="flex-1 overflow-y-auto" style={{ paddingBottom: 72 }}>
         <Page />
       </main>

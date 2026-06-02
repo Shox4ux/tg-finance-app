@@ -1,21 +1,23 @@
 import { LayoutDashboard, TrendingUp, CreditCard, PiggyBank, BarChart2, Bell } from 'lucide-react';
 import { useFinanceStore } from '../store/useFinanceStore';
+import { useT } from '../i18n';
 import type { TabId } from '../types';
 
-const TABS: { id: TabId; label: string; Icon: React.FC<{ size?: number; className?: string }> }[] = [
-  { id: 'dashboard', label: 'Home', Icon: LayoutDashboard },
-  { id: 'income', label: 'Income', Icon: TrendingUp },
-  { id: 'expenses', label: 'Expenses', Icon: CreditCard },
-  { id: 'plans', label: 'Plans', Icon: PiggyBank },
-  { id: 'analysis', label: 'Analysis', Icon: BarChart2 },
-  { id: 'alerts', label: 'Alerts', Icon: Bell },
-];
-
 export function BottomNav() {
+  const t = useT();
   const activeTab = useFinanceStore((s) => s.activeTab);
   const setActiveTab = useFinanceStore((s) => s.setActiveTab);
   const alerts = useFinanceStore((s) => s.alerts);
   const triggeredCount = alerts.filter((a) => a.triggered).length;
+
+  const TABS: { id: TabId; label: string; Icon: React.FC<{ size?: number }> }[] = [
+    { id: 'dashboard', label: t('nav_dashboard'), Icon: LayoutDashboard },
+    { id: 'income', label: t('nav_income'), Icon: TrendingUp },
+    { id: 'expenses', label: t('nav_expenses'), Icon: CreditCard },
+    { id: 'plans', label: t('nav_plans'), Icon: PiggyBank },
+    { id: 'analysis', label: t('nav_analysis'), Icon: BarChart2 },
+    { id: 'alerts', label: t('nav_alerts'), Icon: Bell },
+  ];
 
   return (
     <nav
@@ -44,7 +46,7 @@ export function BottomNav() {
                 </span>
               )}
             </span>
-            <span className={`text-[10px] font-medium ${active ? '' : ''}`}>{label}</span>
+            <span className="text-[10px] font-medium">{label}</span>
           </button>
         );
       })}

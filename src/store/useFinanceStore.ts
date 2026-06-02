@@ -3,9 +3,12 @@ import { persist } from 'zustand/middleware';
 import type {
   IncomeSource, Expense, SavingsPlan, IncomeGrowthPlan, Alert, Currency, TabId,
 } from '../types';
+import type { LangCode } from '../i18n';
 
 interface FinanceState {
   currency: Currency;
+  language: LangCode;
+  tgUserId: string | null;
   activeTab: TabId;
   incomeSources: IncomeSource[];
   expenses: Expense[];
@@ -14,6 +17,10 @@ interface FinanceState {
   alerts: Alert[];
 
   setCurrency: (c: Currency) => void;
+  setLanguage: (l: LangCode) => void;
+  setTgUserId: (id: string) => void;
+  loadFromServer: (userId: string) => Promise<void>;
+  saveToServer: (userId: string) => Promise<void>;
   setActiveTab: (tab: TabId) => void;
 
   // Income
@@ -47,6 +54,8 @@ export const useFinanceStore = create<FinanceState>()(
   persist(
     (set, get) => ({
       currency: 'USD',
+      language: 'en',
+      tgUserId: null,
       activeTab: 'dashboard',
       incomeSources: [],
       expenses: [],
@@ -62,6 +71,46 @@ export const useFinanceStore = create<FinanceState>()(
         growthPlans: s.growthPlans.map((x) => ({ ...x, currency: c })),
         alerts: s.alerts.map((x) => ({ ...x, currency: c })),
       })),
+      setLanguage: (l) => set({ language: l }),
+      setTgUserId: (id) => set({ tgUserId: id }),
+
+      loadFromServer: async (userId) => {
+        try {
+          const res = await fetch(`/api/data/${userId}`);
+          const data = await res.json();
+          if (data) {
+            set({
+              currency: data.currency ?? 'USD',
+              language: data.language ?? 'en',
+              incomeSources: data.incomeSources ?? [],
+              expenses: data.expenses ?? [],
+              savingsPlans: data.savingsPlans ?? [],
+              growthPlans: data.growthPlans ?? [],
+              alerts: data.alerts ?? [],
+            });
+          }
+        } catch { /* keep local data */ }
+      },
+
+      saveToServer: async (userId) => {
+        const s = get();
+        try {
+          await fetch(`/api/data/${userId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              currency: s.currency,
+              language: s.language,
+              incomeSources: s.incomeSources,
+              expenses: s.expenses,
+              savingsPlans: s.savingsPlans,
+              growthPlans: s.growthPlans,
+              alerts: s.alerts,
+            }),
+          });
+        } catch { /* ignore */ }
+      },
+
       setActiveTab: (tab) => set({ activeTab: tab }),
 
       addIncomeSource: (src) => set((s) => ({ incomeSources: [...s.incomeSources, src] })),

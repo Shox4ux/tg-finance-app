@@ -6,12 +6,11 @@ import {
 import { useFinanceStore, selectMonthlyIncome, selectMonthlyExpenses } from '../store/useFinanceStore';
 import { fmt } from '../utils/format';
 import { EXPENSE_CATEGORIES } from '../types';
+import { useT } from '../i18n';
 
 type Period = '7d' | '30d' | '90d' | 'all';
 
-const PERIOD_LABELS: Record<Period, string> = { '7d': '7 days', '30d': '30 days', '90d': '90 days', all: 'All time' };
-
-const CUSTOM_TOOLTIP = ({ active, payload }: { active?: boolean; payload?: { name: string; value: number; payload: { currency: string } }[] }) => {
+const CUSTOM_TOOLTIP = ({ active, payload }: { active?: boolean; payload?: { name: string; value: number }[] }) => {
   if (active && payload?.length) {
     return (
       <div className="rounded-xl px-3 py-2 text-xs shadow-lg" style={{ backgroundColor: 'var(--tg-theme-bg-color)', border: '1px solid rgba(0,0,0,0.1)' }}>
@@ -24,10 +23,15 @@ const CUSTOM_TOOLTIP = ({ active, payload }: { active?: boolean; payload?: { nam
 };
 
 export function Analysis() {
+  const t = useT();
   const expenses = useFinanceStore((s) => s.expenses);
   const currency = useFinanceStore((s) => s.currency);
   const monthlyIncome = useFinanceStore(selectMonthlyIncome);
   const monthlyExpenses = useFinanceStore(selectMonthlyExpenses);
+
+  const PERIOD_LABELS: Record<Period, string> = {
+    '7d': t('an_7d'), '30d': t('an_30d'), '90d': t('an_90d'), all: t('an_all'),
+  };
 
   const [period, setPeriod] = useState<Period>('30d');
 
@@ -40,14 +44,9 @@ export function Analysis() {
     return d;
   }, [period]);
 
-  const filtered = useMemo(
-    () => expenses.filter((e) => new Date(e.date) >= cutoff),
-    [expenses, cutoff]
-  );
-
+  const filtered = useMemo(() => expenses.filter((e) => new Date(e.date) >= cutoff), [expenses, cutoff]);
   const total = filtered.reduce((s, e) => s + e.amount, 0);
 
-  // Category breakdown for pie chart
   const categoryData = useMemo(() => {
     const map: Record<string, number> = {};
     filtered.forEach((e) => { map[e.category] = (map[e.category] ?? 0) + e.amount; });
@@ -57,24 +56,18 @@ export function Analysis() {
       .sort((a, b) => b.value - a.value);
   }, [filtered]);
 
-  // Daily spending for bar/line chart
   const dailyData = useMemo(() => {
     const map: Record<string, number> = {};
     filtered.forEach((e) => { map[e.date] = (map[e.date] ?? 0) + e.amount; });
-    const sorted = Object.entries(map)
+    return Object.entries(map)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([date, amount]) => ({
         date: new Date(date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
         amount: Math.round(amount),
       }));
-    return sorted;
   }, [filtered]);
 
-  // Top expenses
-  const topExpenses = useMemo(() =>
-    [...filtered].sort((a, b) => b.amount - a.amount).slice(0, 5),
-    [filtered]
-  );
+  const topExpenses = useMemo(() => [...filtered].sort((a, b) => b.amount - a.amount).slice(0, 5), [filtered]);
 
   const savingsRate = monthlyIncome > 0
     ? Math.max(0, Math.round(((monthlyIncome - monthlyExpenses) / monthlyIncome) * 100))
@@ -83,23 +76,19 @@ export function Analysis() {
   return (
     <div className="flex flex-col gap-5 pb-6 slide-up">
       <div className="px-5 pt-5">
-        <h2 className="text-2xl font-bold">Analysis</h2>
+        <h2 className="text-2xl font-bold">{t('an_title')}</h2>
       </div>
 
-      {/* Period selector */}
       <div className="px-5">
         <div className="flex gap-1 p-1 rounded-2xl" style={{ backgroundColor: 'var(--tg-theme-secondary-bg-color)' }}>
           {(Object.keys(PERIOD_LABELS) as Period[]).map((p) => (
-            <button
-              key={p}
-              onClick={() => setPeriod(p)}
+            <button key={p} onClick={() => setPeriod(p)}
               className="flex-1 py-2 rounded-xl text-xs font-semibold transition-all"
               style={{
                 backgroundColor: period === p ? 'var(--tg-theme-bg-color, #fff)' : 'transparent',
                 color: period === p ? 'var(--tg-theme-button-color, #2481cc)' : 'var(--tg-theme-hint-color)',
                 boxShadow: period === p ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
-              }}
-            >
+              }}>
               {PERIOD_LABELS[p]}
             </button>
           ))}
@@ -109,77 +98,58 @@ export function Analysis() {
       {filtered.length === 0 ? (
         <div className="mx-5 card flex flex-col items-center py-10 gap-2">
           <span className="text-4xl">📊</span>
-          <p className="text-sm text-hint text-center">No expenses in this period.<br />Add expenses to see analysis.</p>
+          <p className="text-sm text-hint text-center" style={{ whiteSpace: 'pre-line' }}>{t('an_empty')}</p>
         </div>
       ) : (
         <>
-          {/* Overview cards */}
           <div className="px-5 grid grid-cols-3 gap-3">
             <div className="card text-center">
-              <p className="text-xs text-hint mb-1">Total Spent</p>
+              <p className="text-xs text-hint mb-1">{t('an_total')}</p>
               <p className="font-bold text-sm" style={{ color: '#E74C3C' }}>{fmt(total, currency)}</p>
             </div>
             <div className="card text-center">
-              <p className="text-xs text-hint mb-1">Avg/Day</p>
+              <p className="text-xs text-hint mb-1">{t('an_avg')}</p>
               <p className="font-bold text-sm">
                 {fmt(total / Math.max(1, (period === '7d' ? 7 : period === '30d' ? 30 : period === '90d' ? 90 : filtered.length)), currency)}
               </p>
             </div>
             <div className="card text-center">
-              <p className="text-xs text-hint mb-1">Savings Rate</p>
+              <p className="text-xs text-hint mb-1">{t('an_savings_rate')}</p>
               <p className="font-bold text-sm" style={{ color: savingsRate > 20 ? '#27AE60' : savingsRate > 0 ? '#E67E22' : '#E74C3C' }}>
                 {savingsRate}%
               </p>
             </div>
           </div>
 
-          {/* Income vs Expense */}
           <div className="px-5">
-            <p className="section-title">Monthly Balance</p>
+            <p className="section-title">{t('an_monthly_balance')}</p>
             <div className="card">
               <div className="flex justify-between mb-3">
                 <div>
-                  <p className="text-xs text-hint">Income</p>
+                  <p className="text-xs text-hint">{t('an_income')}</p>
                   <p className="font-bold" style={{ color: '#27AE60' }}>{fmt(monthlyIncome, currency)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-hint">Expenses</p>
+                  <p className="text-xs text-hint">{t('an_expenses')}</p>
                   <p className="font-bold" style={{ color: '#E74C3C' }}>{fmt(monthlyExpenses, currency)}</p>
                 </div>
               </div>
               {monthlyIncome > 0 && (
                 <div className="w-full h-3 rounded-full overflow-hidden" style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
-                  <div
-                    className="h-3 rounded-full"
-                    style={{
-                      width: `${Math.min(100, (monthlyExpenses / monthlyIncome) * 100)}%`,
-                      backgroundColor: monthlyExpenses > monthlyIncome ? '#E74C3C' : '#E67E22',
-                    }}
-                  />
+                  <div className="h-3 rounded-full" style={{ width: `${Math.min(100, (monthlyExpenses / monthlyIncome) * 100)}%`, backgroundColor: monthlyExpenses > monthlyIncome ? '#E74C3C' : '#E67E22' }} />
                 </div>
               )}
             </div>
           </div>
 
-          {/* Category Pie Chart */}
           {categoryData.length > 0 && (
             <div className="px-5">
-              <p className="section-title">Spending by Category</p>
+              <p className="section-title">{t('an_by_cat')}</p>
               <div className="card">
                 <ResponsiveContainer width="100%" height={200}>
                   <PieChart>
-                    <Pie
-                      data={categoryData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={55}
-                      outerRadius={85}
-                      paddingAngle={3}
-                      dataKey="value"
-                    >
-                      {categoryData.map((entry, index) => (
-                        <Cell key={index} fill={entry.color} />
-                      ))}
+                    <Pie data={categoryData} cx="50%" cy="50%" innerRadius={55} outerRadius={85} paddingAngle={3} dataKey="value">
+                      {categoryData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
                     </Pie>
                     <Tooltip content={<CUSTOM_TOOLTIP />} />
                   </PieChart>
@@ -198,10 +168,9 @@ export function Analysis() {
             </div>
           )}
 
-          {/* Daily spending chart */}
           {dailyData.length > 1 && (
             <div className="px-5">
-              <p className="section-title">Daily Spending</p>
+              <p className="section-title">{t('an_daily')}</p>
               <div className="card">
                 <ResponsiveContainer width="100%" height={160}>
                   <BarChart data={dailyData} margin={{ top: 5, right: 5, bottom: 5, left: -20 }}>
@@ -216,10 +185,9 @@ export function Analysis() {
             </div>
           )}
 
-          {/* Top expenses */}
           {topExpenses.length > 0 && (
             <div className="px-5">
-              <p className="section-title">Top Expenses</p>
+              <p className="section-title">{t('an_top')}</p>
               <div className="flex flex-col gap-2">
                 {topExpenses.map((exp, i) => {
                   const cat = EXPENSE_CATEGORIES.find((c) => c.id === exp.category)!;
@@ -231,9 +199,7 @@ export function Analysis() {
                         <p className="font-medium text-sm truncate">{exp.title}</p>
                         <p className="text-xs text-hint">{cat.label}</p>
                       </div>
-                      <span className="font-bold text-sm" style={{ color: '#E74C3C' }}>
-                        {fmt(exp.amount, exp.currency)}
-                      </span>
+                      <span className="font-bold text-sm" style={{ color: '#E74C3C' }}>{fmt(exp.amount, exp.currency)}</span>
                     </div>
                   );
                 })}
