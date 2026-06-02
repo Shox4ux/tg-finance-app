@@ -54,7 +54,14 @@ export const useFinanceStore = create<FinanceState>()(
       growthPlans: [],
       alerts: [],
 
-      setCurrency: (c) => set({ currency: c }),
+      setCurrency: (c) => set((s) => ({
+        currency: c,
+        incomeSources: s.incomeSources.map((x) => ({ ...x, currency: c })),
+        expenses: s.expenses.map((x) => ({ ...x, currency: c })),
+        savingsPlans: s.savingsPlans.map((x) => ({ ...x, currency: c })),
+        growthPlans: s.growthPlans.map((x) => ({ ...x, currency: c })),
+        alerts: s.alerts.map((x) => ({ ...x, currency: c })),
+      })),
       setActiveTab: (tab) => set({ activeTab: tab }),
 
       addIncomeSource: (src) => set((s) => ({ incomeSources: [...s.incomeSources, src] })),

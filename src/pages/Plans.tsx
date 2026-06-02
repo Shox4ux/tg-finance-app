@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Plus, Trash2, Pencil, PlusCircle, Target, TrendingUp } from 'lucide-react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { Sheet } from '../components/Sheet';
-import { CurrencySelect } from '../components/CurrencySelect';
 import { fmt, uid, fmtDate } from '../utils/format';
 import { INCOME_COLORS, type SavingsPlan, type IncomeGrowthPlan, type Currency } from '../types';
 
@@ -137,15 +136,9 @@ function SavingsPlans() {
             <label className="section-title block">Goal Name</label>
             <input className="input-field" placeholder="e.g. Emergency Fund, New Laptop..." value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="section-title block">Target Amount</label>
-              <input className="input-field" type="number" placeholder="0" value={form.targetAmount || ''} onChange={(e) => setForm((f) => ({ ...f, targetAmount: parseFloat(e.target.value) || 0 }))} />
-            </div>
-            <div>
-              <label className="section-title block">Currency</label>
-              <CurrencySelect value={form.currency as Currency} onChange={(c) => setForm((f) => ({ ...f, currency: c }))} />
-            </div>
+          <div>
+            <label className="section-title block">Target Amount</label>
+            <input className="input-field" type="number" placeholder="0" value={form.targetAmount || ''} onChange={(e) => setForm((f) => ({ ...f, targetAmount: parseFloat(e.target.value) || 0 }))} />
           </div>
           <div>
             <label className="section-title block">Already Saved</label>
@@ -302,15 +295,9 @@ function GrowthPlans() {
               <input className="input-field" type="number" placeholder="0" value={form.targetAmount || ''} onChange={(e) => setForm((f) => ({ ...f, targetAmount: parseFloat(e.target.value) || 0 }))} />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="section-title block">Currency</label>
-              <CurrencySelect value={form.currency as Currency} onChange={(c) => setForm((f) => ({ ...f, currency: c }))} />
-            </div>
-            <div>
-              <label className="section-title block">Target Date</label>
-              <input className="input-field" type="date" value={form.targetDate} onChange={(e) => setForm((f) => ({ ...f, targetDate: e.target.value }))} />
-            </div>
+          <div>
+            <label className="section-title block">Target Date</label>
+            <input className="input-field" type="date" value={form.targetDate} onChange={(e) => setForm((f) => ({ ...f, targetDate: e.target.value }))} />
           </div>
           <div>
             <div className="flex items-center justify-between mb-1">

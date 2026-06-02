@@ -1,6 +1,6 @@
 import type { Currency } from '../types';
 
-const CURRENCIES: Currency[] = ['USD', 'EUR', 'UZS', 'RUB'];
+const CURRENCIES: Currency[] = ['USD', 'EUR', 'UZS', 'RUB', 'CNY'];
 
 interface Props {
   value: Currency;

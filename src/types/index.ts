@@ -1,4 +1,4 @@
-export type Currency = 'USD' | 'EUR' | 'UZS' | 'RUB';
+export type Currency = 'USD' | 'EUR' | 'UZS' | 'RUB' | 'CNY';
 
 export type IncomeFrequency = 'one-time' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 
@@ -92,4 +92,5 @@ export const CURRENCY_SYMBOLS: Record<Currency, string> = {
   EUR: '€',
   UZS: "so'm",
   RUB: '₽',
+  CNY: '¥',
 };

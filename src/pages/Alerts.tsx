@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Plus, Trash2, Bell, AlertTriangle } from 'lucide-react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { Sheet } from '../components/Sheet';
-import { CurrencySelect } from '../components/CurrencySelect';
 import { fmt, uid } from '../utils/format';
 import { EXPENSE_CATEGORIES, type Alert, type ExpenseCategory, type Currency } from '../types';
 
@@ -147,21 +146,15 @@ export function Alerts() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="section-title block">Threshold Amount</label>
-              <input
-                className="input-field"
-                type="number"
-                placeholder="0"
-                value={form.threshold || ''}
-                onChange={(e) => setForm((f) => ({ ...f, threshold: parseFloat(e.target.value) || 0 }))}
-              />
-            </div>
-            <div>
-              <label className="section-title block">Currency</label>
-              <CurrencySelect value={form.currency as Currency} onChange={(c) => setForm((f) => ({ ...f, currency: c }))} />
-            </div>
+          <div>
+            <label className="section-title block">Threshold Amount</label>
+            <input
+              className="input-field"
+              type="number"
+              placeholder="0"
+              value={form.threshold || ''}
+              onChange={(e) => setForm((f) => ({ ...f, threshold: parseFloat(e.target.value) || 0 }))}
+            />
           </div>
 
           <div>

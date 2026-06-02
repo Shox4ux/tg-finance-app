@@ -1,10 +1,12 @@
 import { TrendingUp, TrendingDown, PiggyBank, Bell, Plus } from 'lucide-react';
 import { useFinanceStore, selectMonthlyIncome, selectMonthlyExpenses } from '../store/useFinanceStore';
+import { CurrencySelect } from '../components/CurrencySelect';
 import { fmt, fmtDate } from '../utils/format';
-import { EXPENSE_CATEGORIES } from '../types';
+import { EXPENSE_CATEGORIES, type Currency } from '../types';
 
 export function Dashboard() {
   const currency = useFinanceStore((s) => s.currency);
+  const setCurrency = useFinanceStore((s) => s.setCurrency);
   const expenses = useFinanceStore((s) => s.expenses);
   const savingsPlans = useFinanceStore((s) => s.savingsPlans);
   const alerts = useFinanceStore((s) => s.alerts);
@@ -26,7 +28,8 @@ export function Dashboard() {
   return (
     <div className="flex flex-col gap-4 pb-6 slide-up">
       {/* Header */}
-      <div className="px-5 pt-5">
+      <div className="px-5 pt-5 flex items-start justify-between">
+        <div className="flex-1">
         <p className="text-sm text-hint">This month's balance</p>
         <h1
           className="text-4xl font-bold mt-1"
@@ -37,6 +40,12 @@ export function Dashboard() {
         <p className="text-sm text-hint mt-1">
           {savingsRate >= 0 ? `Saving ${savingsRate}% of income` : 'Spending more than earning'}
         </p>
+        </div>
+        <CurrencySelect
+          value={currency as Currency}
+          onChange={(c) => setCurrency(c)}
+          className="w-20 text-sm"
+        />
       </div>
 
       {/* Stat cards */}

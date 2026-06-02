@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Plus, Trash2, Search, SlidersHorizontal } from 'lucide-react';
 import { useFinanceStore } from '../store/useFinanceStore';
 import { Sheet } from '../components/Sheet';
-import { CurrencySelect } from '../components/CurrencySelect';
 import { fmt, uid, todayISO, fmtDate } from '../utils/format';
 import {
   EXPENSE_CATEGORIES, type Expense, type ExpenseCategory, type Currency,
@@ -184,24 +183,15 @@ export function Expenses() {
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="section-title block">Amount</label>
-              <input
-                className="input-field"
-                type="number"
-                placeholder="0"
-                value={form.amount || ''}
-                onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))}
-              />
-            </div>
-            <div>
-              <label className="section-title block">Currency</label>
-              <CurrencySelect
-                value={form.currency as Currency}
-                onChange={(c) => setForm((f) => ({ ...f, currency: c }))}
-              />
-            </div>
+          <div>
+            <label className="section-title block">Amount</label>
+            <input
+              className="input-field"
+              type="number"
+              placeholder="0"
+              value={form.amount || ''}
+              onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))}
+            />
           </div>
           <div>
             <label className="section-title block">Category</label>

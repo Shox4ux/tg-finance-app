@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Plus, Trash2, Pencil } from 'lucide-react';
 import { useFinanceStore, selectMonthlyIncome } from '../store/useFinanceStore';
 import { Sheet } from '../components/Sheet';
-import { CurrencySelect } from '../components/CurrencySelect';
 import { fmt, uid } from '../utils/format';
-import { INCOME_COLORS, type IncomeSource, type IncomeFrequency, type Currency } from '../types';
+import { INCOME_COLORS, type IncomeSource, type IncomeFrequency } from '../types';
 
 const FREQ_LABELS: Record<IncomeFrequency, string> = {
   'one-time': 'One-time',
@@ -148,24 +147,15 @@ export function Income() {
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="section-title block">Amount</label>
-              <input
-                className="input-field"
-                type="number"
-                placeholder="0"
-                value={form.amount || ''}
-                onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))}
-              />
-            </div>
-            <div>
-              <label className="section-title block">Currency</label>
-              <CurrencySelect
-                value={form.currency as Currency}
-                onChange={(c) => setForm((f) => ({ ...f, currency: c }))}
-              />
-            </div>
+          <div>
+            <label className="section-title block">Amount</label>
+            <input
+              className="input-field"
+              type="number"
+              placeholder="0"
+              value={form.amount || ''}
+              onChange={(e) => setForm((f) => ({ ...f, amount: parseFloat(e.target.value) || 0 }))}
+            />
           </div>
           <div>
             <label className="section-title block">Frequency</label>
@@ -192,7 +182,7 @@ export function Income() {
           {form.frequency !== 'one-time' && form.amount > 0 && (
             <div className="rounded-xl p-3 text-center text-sm" style={{ backgroundColor: 'rgba(39,174,96,0.1)' }}>
               Monthly: <span className="font-bold" style={{ color: '#27AE60' }}>
-                {fmt(form.amount * MONTHLY_MULTIPLIER[form.frequency as IncomeFrequency], form.currency as Currency)}/mo
+                {fmt(form.amount * MONTHLY_MULTIPLIER[form.frequency as IncomeFrequency], defaultCurrency)}/mo
               </span>
             </div>
           )}
